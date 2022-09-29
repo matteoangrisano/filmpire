@@ -7,23 +7,34 @@ const page = 1;
 
 // Creo l'API per effettuare il fetch da TMDB
 export const tmdbApi = createApi({
-    reducerPath: 'tmdbApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://api.themoviedb.org/3' }),
-    endpoints: (builder) => ({
-        //* Get Genres by [Type]
-        getGenres: builder.query({
-            query: () => {
-                return `genre/movie/list?&api_key=${tmdbApiKey}`;
-            },
-        }),
+	reducerPath: 'tmdbApi',
+	baseQuery: fetchBaseQuery({ baseUrl: 'https://api.themoviedb.org/3' }),
+	endpoints: (builder) => ({
+		// Get Genres by [Type] (crea automaticamente Hook useGetGenresQuery)
+		getGenres: builder.query({
+			query: () => {
+				return `genre/movie/list?&api_key=${tmdbApiKey}`;
+			},
+		}),
 
-        //* Get Movies by [Type]
-        getMovies: builder.query({
-            query: () => {
-                return `movie/popular?page=${page}&api_key=${tmdbApiKey}`;
-            },
-        }),
-    }),
+		// Get Movies by [Type] (crea automaticamente Hook useGetMoviesQuery)
+		getMovies: builder.query({
+			query: ({ genreIdOrCategoryName, page }) => {
+				// Get Movies by Category
+				if (genreIdOrCategoryName && typeof genreIdOrCategoryName === 'string') {
+					return `movie/${genreIdOrCategoryName}?page=${page}&api_key=${tmdbApiKey}`;
+				}
+
+				// Get Movies by Genre
+				if (genreIdOrCategoryName && typeof genreIdOrCategoryName === 'number') {
+					return `discover/movie?with_genres=${genreIdOrCategoryName}&page=${page}&api_key=${tmdbApiKey}`;
+				}
+
+				// Get Popular Movies (per il rendering iniziale, quando non è stata selezionato genere/categoria)
+				return `movie/popular?page=${page}&api_key=${tmdbApiKey}`;
+			},
+		}),
+	}),
 });
 
 export const { useGetMoviesQuery, useGetGenresQuery } = tmdbApi;
