@@ -8,11 +8,12 @@ import { MovieList } from '..';
 
 const Movies = () => {
 	const [page, setPage] = useState(1);
-	const { genreIdOrCategoryName } = useSelector((state) => state.currentGenreOrCategory);
+	const { genreIdOrCategoryName, searchQuery } = useSelector((state) => state.currentGenreOrCategory);
 	// Fetch dei movies per popolare il componente Movies
 	const { data, error, isFetching } = useGetMoviesQuery({
 		genreIdOrCategoryName,
 		page,
+		searchQuery,
 	});
 
 	if (isFetching) {
