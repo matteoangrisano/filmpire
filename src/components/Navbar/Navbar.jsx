@@ -5,14 +5,31 @@ import { Link } from 'react-router-dom';
 import { useTheme } from '@mui/material/styles';
 
 import { Search, Sidebar } from '..';
+import { fetchToken, createSessionId, moviesApi } from '../../utils';
 import useStyles from './styles';
+import { useEffect } from 'react';
 
 const Navbar = () => {
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const classes = useStyles();
 	const isMobile = useMediaQuery('(max-width:600px)');
 	const theme = useTheme();
-	const isAuthenticated = true;
+	const isAuthenticated = false;
+	const token = localStorage.getItem('request_token');
+	const sessionIdFromLocaleStorage = localStorage.getItem('session_id');
+
+	useEffect(() => {
+		const logInUser = async () => {
+			if (token) {
+				if (sessionIdFromLocaleStorage) {
+					const { data: userData } = await moviesApi.get(`/account?session_id=${sessionIdFromLocaleStorage}`);
+				} else {
+					const sessionId = await createSessionId();
+					const { data: userData } = await moviesApi.get(`/account?session_id=${sessionIdFromLocaleStorage}`);
+				}
+			}
+		};
+	}, [token]);
 
 	return (
 		<>
@@ -35,7 +52,7 @@ const Navbar = () => {
 					{!isMobile && <Search />}
 					<div>
 						{!isAuthenticated ? (
-							<Button color='inherit' onClick={() => {}}>
+							<Button color='inherit' onClick={fetchToken}>
 								Login &nbsp; <AccountCircle />
 							</Button>
 						) : (
