@@ -20,4 +20,8 @@ const authSlice = createSlice({
 
 export const { setUser } = authSlice.actions;
 export default authSlice.reducer;
+
+// Esportato così, in modo da poter semplificare il codice in Navbar riga 14:
+// useSelector(userSelector) anziché useSelector((state) => state.user)
+// questo implica che il componente debba importare la seguente funzione
 export const userSelector = (state) => state.user;
