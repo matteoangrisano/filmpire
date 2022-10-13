@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import {
 	Divider,
 	List,
 	ListItem,
-	ListItemButton,
 	ListItemText,
 	ListSubheader,
 	ListItemIcon,
@@ -12,12 +10,13 @@ import {
 	CircularProgress,
 } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/styles';
+import { useDispatch, useSelector } from 'react-redux';
 
-import useStyles from './styles';
-import { useGetGenresQuery } from '../../services/TMDB';
 import { selectGenreOrCategory } from '../../features/currentGenreOrCategory';
-import genreIcon from '../../assets/genres';
+import { useGetGenresQuery } from '../../services/TMDB';
+import useStyles from './styles';
+import genreIcons from '../../assets/genres';
 
 const categories = [
 	{ label: 'Popular', value: 'popular' },
@@ -28,15 +27,21 @@ const categories = [
 const redLogo = 'https://fontmeme.com/permalink/210930/8531c658a743debe1e1aa1a2fc82006e.png';
 const blueLogo = 'https://fontmeme.com/permalink/210930/6854ae5c7f76597cf8680e48a2c8a50a.png';
 
-const Sidebar = () => {
-	const classes = useStyles();
-	const theme = useTheme();
-	// Fetch dei generi per popolare la Sidebar
-	const { data, error, isFetching } = useGetGenresQuery();
-	// Permette di estrarre un dato dallo store, in questo caso il genere/categoria selezionato
+const Sidebar = ({ setMobileOpen }) => {
+	// Allow to extract info from the Store, in this case selected genre/category
 	const { genreIdOrCategoryName } = useSelector((state) => state.currentGenreOrCategory);
-	// Richiama il reducer che dovrà aggiornare un determinato stato sullo store, passandogli il valore da assegnare
+	const theme = useTheme();
+	const classes = useStyles();
+
+	// Genres fetch for the first initial Sidebar's component rendering
+	const { data, isFetching } = useGetGenresQuery();
+
+	// Calls the Reducer to update a certain state in the Store, passing it the new value
 	const dispatch = useDispatch();
+
+	useEffect(() => {
+		setMobileOpen(false);
+	}, [genreIdOrCategoryName]);
 
 	return (
 		<>
@@ -48,32 +53,31 @@ const Sidebar = () => {
 				<ListSubheader>Categories</ListSubheader>
 				{categories.map(({ label, value }) => (
 					<Link key={value} className={classes.links} to='/'>
-						<ListItemButton onClick={() => dispatch(selectGenreOrCategory(value))}>
+						<ListItem onClick={() => dispatch(selectGenreOrCategory(value))} button>
 							<ListItemIcon>
-								<img src={genreIcon[label.toLowerCase()]} className={classes.genreImages} height={30} />
+								<img src={genreIcons[label.toLowerCase()]} className={classes.genreImage} height={30} />
 							</ListItemIcon>
 							<ListItemText primary={label} />
-						</ListItemButton>
+						</ListItem>
 					</Link>
 				))}
 			</List>
+			<Divider />
 			<List>
 				<ListSubheader>Genres</ListSubheader>
 				{isFetching ? (
-					<Box display='flex' justifyContent={'center'}>
-						<CircularProgress size='4rem' />
+					<Box display='flex' justifyContent='center'>
+						<CircularProgress />
 					</Box>
 				) : (
 					data.genres.map(({ name, id }) => (
 						<Link key={name} className={classes.links} to='/'>
-							<ListItemButton onClick={() => dispatch(selectGenreOrCategory(id))}>
-								{
-									<ListItemIcon>
-										<img src={genreIcon[name.toLowerCase()]} className={classes.genreImages} height={30} />
-									</ListItemIcon>
-								}
+							<ListItem onClick={() => dispatch(selectGenreOrCategory(id))} button>
+								<ListItemIcon>
+									<img src={genreIcons[name.toLowerCase()]} className={classes.genreImage} height={30} />
+								</ListItemIcon>
 								<ListItemText primary={name} />
-							</ListItemButton>
+							</ListItem>
 						</Link>
 					))
 				)}

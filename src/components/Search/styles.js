@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 
-const styles = makeStyles((theme) => ({
+export default makeStyles((theme) => ({
 	searchContainer: {
 		[theme.breakpoints.down('sm')]: {
 			display: 'flex',
@@ -17,5 +17,3 @@ const styles = makeStyles((theme) => ({
 		},
 	},
 }));
-
-export default styles;

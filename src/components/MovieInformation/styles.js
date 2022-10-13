@@ -1,6 +1,6 @@
 import { makeStyles } from '@mui/styles';
 
-const styles = makeStyles((theme) => ({
+export default makeStyles((theme) => ({
 	containerSpaceAround: {
 		display: 'flex',
 		justifyContent: 'space-around',
@@ -13,7 +13,7 @@ const styles = makeStyles((theme) => ({
 	poster: {
 		borderRadius: '20px',
 		boxShadow: '0.5em 1em 1em rgb(64, 64, 70)',
-		width: '80%',
+		height: '65%',
 		[theme.breakpoints.down('md')]: {
 			margin: '0 auto',
 			width: '50%',
@@ -46,7 +46,7 @@ const styles = makeStyles((theme) => ({
 		},
 	},
 	castImage: {
-		width: '100px',
+		width: '100%',
 		maxWidth: '7em',
 		height: '8em',
 		objectFit: 'cover',
@@ -74,5 +74,3 @@ const styles = makeStyles((theme) => ({
 		},
 	},
 }));
-
-export default styles;

@@ -1,12 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const initialState = {
+	user: {},
+	isAuthenticated: false,
+	sessionId: '',
+};
+
 const authSlice = createSlice({
 	name: 'user',
-	initialState: {
-		user: {},
-		isAuthenticated: false,
-		sessionId: '',
-	},
+	initialState,
 	reducers: {
 		setUser: (state, action) => {
 			state.user = action.payload;
@@ -19,6 +21,7 @@ const authSlice = createSlice({
 });
 
 export const { setUser } = authSlice.actions;
+
 export default authSlice.reducer;
 
 // Esportato così, in modo da poter semplificare il codice in Navbar riga 14:
